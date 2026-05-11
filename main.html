@@ -1,16 +1,70 @@
+
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom EventTarget</title>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+
+  <h2>Open Console to See Output</h2>
+
+  <script>
+    class EventTarget {
+      constructor() {
+        this.events = {};
+      }
+
+      // Add event listener
+      addEventListener(eventName, callback) {
+        if (!this.events[eventName]) {
+          this.events[eventName] = [];
+        }
+
+        // Avoid duplicate listeners
+        if (!this.events[eventName].includes(callback)) {
+          this.events[eventName].push(callback);
+        }
+      }
+
+      // Remove event listener
+      removeEventListener(eventName, callback) {
+        if (!this.events[eventName]) return;
+
+        this.events[eventName] = this.events[eventName].filter(
+          listener => listener !== callback
+        );
+      }
+
+      // Dispatch event
+      dispatchEvent(eventName) {
+        if (!this.events[eventName]) return;
+
+        this.events[eventName].forEach(callback => {
+          callback();
+        });
+      }
+    }
+
+    // Sample Usage
+    const target = new EventTarget();
+
+    const logHello = () => console.log("hello");
+    const logWorld = () => console.log("world");
+
+    target.addEventListener("hello", logHello);
+    target.addEventListener("world", logWorld);
+
+    target.dispatchEvent("hello");
+    target.dispatchEvent("world");
+
+    target.removeEventListener("hello", logHello);
+
+    target.dispatchEvent("hello"); // Nothing happens
+    target.dispatchEvent("world");
+
+  </script>
 
 </body>
-
 </html>
